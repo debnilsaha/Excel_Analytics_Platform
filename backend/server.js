@@ -7,7 +7,6 @@ dotenv.config();
 
 const app = express();
 
-// ✅ Setup CORS properly
 const corsOptions = {
   origin: "http://localhost:5173",
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
@@ -17,14 +16,24 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-// ✅ Allow JSON body parsing
 app.use(express.json());
+app.use(express.urlencoded({ extended: true })); // 
 
-// ✅ Load routes after middleware
 const authRoutes = require("./routes/authRoutes");
 app.use("/api/auth", authRoutes);
 
-// ✅ Connect to MongoDB
+const uploadRoutes = require("./routes/uploadRoutes");
+app.use("/api", uploadRoutes);
+
+const chartRoutes = require("./routes/chartRoutes");
+app.use("/api/charts", chartRoutes);
+
+const aiRoutes = require("./routes/aiRoutes");
+app.use("/api/ai", aiRoutes);
+
+const adminRoutes = require("./routes/adminRoutes");
+app.use("/api/admin", adminRoutes);
+
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     app.listen(process.env.PORT, () =>

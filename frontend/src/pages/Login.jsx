@@ -13,7 +13,11 @@ export default function Login() {
         username,
         password,
       });
+
       localStorage.setItem("token", res.data.token);
+      localStorage.setItem("username", res.data.user.username);
+      localStorage.setItem("role", res.data.user.role);
+
       navigate("/dashboard");
     } catch {
       alert("Login failed. Please check your credentials.");
@@ -21,31 +25,47 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm">
-        <h2 className="text-2xl font-bold text-center mb-6">Login</h2>
-        <input
-          className="w-full px-4 py-2 mb-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-        <input
-          className="w-full px-4 py-2 mb-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-          placeholder="Password"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button
-          className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 rounded transition duration-200"
-          onClick={handleLogin}
-        >
-          Login
-        </button>
-        <p className="mt-4 text-center text-sm">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-white px-4">
+      <div className="bg-white shadow-lg rounded-xl w-full max-w-md p-8 transition-transform transform hover:scale-[1.01]">
+        <div className="text-center mb-6">
+          <h1 className="text-3xl font-bold text-blue-600 mb-2">Welcome Back</h1>
+          <p className="text-gray-500 text-sm">Log in to access your dashboard</p>
+        </div>
+
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Enter your username"
+              className="w-full px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
+              className="w-full px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+
+          <button
+            onClick={handleLogin}
+            className="w-full bg-blue-600 text-white py-2 rounded-md font-semibold hover:bg-blue-700 transition duration-200"
+          >
+            Login
+          </button>
+        </div>
+
+        <p className="mt-6 text-center text-sm text-gray-600">
           Don’t have an account?{" "}
-          <Link to="/register" className="text-blue-500 hover:underline">
+          <Link to="/register" className="text-blue-600 hover:underline font-medium">
             Register here
           </Link>
         </p>
