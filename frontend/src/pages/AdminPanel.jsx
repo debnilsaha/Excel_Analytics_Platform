@@ -105,6 +105,7 @@ export default function AdminPanel() {
                   <th className="px-4 py-3 border">Username</th>
                   <th className="px-4 py-3 border">Role</th>
                   <th className="px-4 py-3 border">Registered At</th>
+                  <th className="px-4 py-3 border">Uploaded Files</th>
                   <th className="px-4 py-3 border">Actions</th>
                 </tr>
               </thead>
@@ -115,6 +116,22 @@ export default function AdminPanel() {
                     <td className="px-4 py-2 border capitalize">{user.role}</td>
                     <td className="px-4 py-2 border">
                       {new Date(user.createdAt).toLocaleString()}
+                    </td>
+                    <td className="px-4 py-2 border">
+                      {user.files && user.files.length > 0 ? (
+                        <ul className="list-disc pl-5 space-y-1">
+                          {user.files.map((file, index) => (
+                            <li key={index}>
+                              <span className="font-medium">{file.filename}</span> –{" "}
+                              <span className="text-gray-500 text-xs">
+                                {new Date(file.uploadedAt).toLocaleString()}
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <span className="text-gray-400 italic">No files uploaded</span>
+                      )}
                     </td>
                     <td className="px-4 py-2 border space-x-2">
                       <button

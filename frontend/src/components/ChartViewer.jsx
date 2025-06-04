@@ -5,12 +5,15 @@ import {
   BarElement,
   PointElement,
   ArcElement,
+  RadarController,
+  RadialLinearScale,
   CategoryScale,
   LinearScale,
   Tooltip,
   Legend,
+  Filler,
 } from "chart.js";
-import { Line, Bar, Pie, Scatter } from "react-chartjs-2";
+import { Line, Bar, Pie, Scatter, Radar } from "react-chartjs-2";
 import jsPDF from "jspdf";
 import axios from "axios";
 
@@ -19,10 +22,13 @@ ChartJS.register(
   BarElement,
   PointElement,
   ArcElement,
+  RadarController,
+  RadialLinearScale,
   CategoryScale,
   LinearScale,
   Tooltip,
-  Legend
+  Legend,
+  Filler
 );
 
 export default function ChartViewer({ data, recordId, filename }) {
@@ -50,17 +56,20 @@ export default function ChartViewer({ data, recordId, filename }) {
     datasets: [
       {
         label: `${yAxis} vs ${xAxis}`,
-        data: data.map((row) =>
+        data:
           chartType === "scatter"
-            ? { x: row[xAxis], y: row[yAxis] }
-            : row[yAxis]
-        ),
+            ? data.map((row) => ({ x: row[xAxis], y: row[yAxis] }))
+            : data.map((row) => row[yAxis]),
         backgroundColor:
           chartType === "pie"
             ? data.map((_, i) => distinctColors[i % distinctColors.length])
+            : chartType === "area"
+            ? "rgba(59,130,246,0.3)"
             : "rgba(59,130,246,0.5)",
         borderColor: "rgb(59,130,246)",
+        fill: chartType === "area" ? true : false,
         pointBackgroundColor: "rgb(59,130,246)",
+        tension: chartType === "area" ? 0.4 : 0, // for smoothness
       },
     ],
   };
@@ -74,7 +83,7 @@ export default function ChartViewer({ data, recordId, filename }) {
         labels: {
           generateLabels: (chart) => {
             const data = chart.data;
-            if (data.labels.length && data.datasets.length) {
+            if (chartType === "pie" && data.labels.length && data.datasets.length) {
               return data.labels.map((label, i) => ({
                 text: `${label}: ${data.datasets[0].data[i]}`,
                 fillStyle: data.datasets[0].backgroundColor[i],
@@ -84,7 +93,7 @@ export default function ChartViewer({ data, recordId, filename }) {
                 index: i,
               }));
             }
-            return [];
+            return ChartJS.defaults.plugins.legend.labels.generateLabels(chart);
           },
         },
       },
@@ -113,6 +122,10 @@ export default function ChartViewer({ data, recordId, filename }) {
         return <Pie ref={chartRef} data={chartData} options={options} />;
       case "scatter":
         return <Scatter ref={chartRef} data={chartData} options={options} />;
+      case "radar":
+        return <Radar ref={chartRef} data={chartData} options={options} />;
+      case "area":
+        return <Line ref={chartRef} data={chartData} options={options} />;
       default:
         return <Line ref={chartRef} data={chartData} options={options} />;
     }
@@ -163,7 +176,6 @@ export default function ChartViewer({ data, recordId, filename }) {
     setChatMessages([]);
 
     try {
-      // Summarize data for AI prompt
       const numericValues = data
         .map((row) => parseFloat(row[yAxis]))
         .filter((val) => !isNaN(val));
@@ -229,8 +241,10 @@ export default function ChartViewer({ data, recordId, filename }) {
           >
             <option value="line">Line</option>
             <option value="bar">Bar</option>
+            <option value="area">Area</option>
             <option value="pie">Pie</option>
             <option value="scatter">Scatter</option>
+            <option value="radar">Radar</option>
           </select>
         </div>
 
@@ -266,29 +280,10 @@ export default function ChartViewer({ data, recordId, filename }) {
       </div>
 
       <div className="flex gap-3 flex-wrap mb-4">
-        <button
-          onClick={handleExportPNG}
-          className="px-4 py-2 bg-blue-600 text-white rounded shadow hover:bg-blue-700"
-        >
-          📤 Export PNG
-        </button>
-        <button
-          onClick={handleExportPDF}
-          className="px-4 py-2 bg-green-600 text-white rounded shadow hover:bg-green-700"
-        >
-          📄 Export PDF
-        </button>
-        <button
-          onClick={handleSaveConfig}
-          className="px-4 py-2 bg-indigo-600 text-white rounded shadow hover:bg-indigo-700"
-        >
-          💾 Save Config
-        </button>
-        <button
-          onClick={handleGenerateInsight}
-          className="px-4 py-2 bg-purple-600 text-white rounded shadow hover:bg-purple-700"
-          disabled={loadingInsight}
-        >
+        <button onClick={handleExportPNG} className="px-4 py-2 bg-blue-600 text-white rounded shadow hover:bg-blue-700">📤 Export PNG</button>
+        <button onClick={handleExportPDF} className="px-4 py-2 bg-green-600 text-white rounded shadow hover:bg-green-700">📄 Export PDF</button>
+        <button onClick={handleSaveConfig} className="px-4 py-2 bg-indigo-600 text-white rounded shadow hover:bg-indigo-700">💾 Save Config</button>
+        <button onClick={handleGenerateInsight} disabled={loadingInsight} className="px-4 py-2 bg-purple-600 text-white rounded shadow hover:bg-purple-700">
           {loadingInsight ? "⏳ Generating..." : "🤖 Generate AI Insight"}
         </button>
       </div>

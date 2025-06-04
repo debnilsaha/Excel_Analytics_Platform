@@ -1,4 +1,4 @@
-const ChartConfig = require("../models/ChartConfig");
+const ChartConfig = require("../models/chartConfig");
 
 exports.saveChartConfig = async (req, res) => {
   try {

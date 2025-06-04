@@ -1,5 +1,3 @@
-// controllers/aiController.js
-
 const axios = require('axios');
 
 const generateInsight = async (req, res) => {

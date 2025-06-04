@@ -34,6 +34,9 @@ app.use("/api/ai", aiRoutes);
 const adminRoutes = require("./routes/adminRoutes");
 app.use("/api/admin", adminRoutes);
 
+const analyticsRoutes = require("./routes/analyticsRoutes");
+app.use("/api/analytics", analyticsRoutes);
+
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     app.listen(process.env.PORT, () =>

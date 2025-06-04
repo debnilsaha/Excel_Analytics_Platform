@@ -9,4 +9,4 @@ const chartConfigSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model("ChartConfig", chartConfigSchema);
+module.exports = mongoose.models.ChartConfig || mongoose.model("ChartConfig", chartConfigSchema);

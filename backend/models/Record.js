@@ -1,14 +1,11 @@
 const mongoose = require("mongoose");
 
 const recordSchema = new mongoose.Schema({
-  data: [mongoose.Schema.Types.Mixed], // flexible for Excel rows
-  uploadedBy: String,
   filename: String,
-  uploadedAt: {
-    type: Date,
-    default: Date.now,
-  },
-  fileBuffer: Buffer, // ✅ added to support downloading
-});
+  data: Array,
+  uploadedBy: String,
+  uploadedAt: { type: Date, default: Date.now },
+  downloads: { type: Number, default: 0 }
+},  { timestamps: true });
 
-module.exports = mongoose.model("Record", recordSchema);
+module.exports = mongoose.models.Record || mongoose.model("Record", recordSchema);

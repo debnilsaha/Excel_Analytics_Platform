@@ -37,22 +37,22 @@ export default function Chart3DViewer({ data }) {
       i: [0, 0, 0, 1, 1, 2, 2, 3, 4, 4, 5, 6],
       j: [1, 2, 4, 2, 5, 3, 6, 7, 5, 6, 6, 7],
       k: [2, 3, 5, 5, 6, 6, 7, 4, 6, 7, 7, 4],
-      opacity: 1,
+      opacity: 0.95,
       color: "rgb(59,130,246)",
       hovertext: `${xField}: ${label}, ${yField}: ${y}, ${zField}: ${zHeight}`,
       hoverinfo: "text",
       showscale: false,
       lighting: {
-        ambient: 0.6,
-        diffuse: 1,
-        specular: 0.8,
-        roughness: 0.4,
-        fresnel: 0.2,
+        ambient: 0.5,
+        diffuse: 0.9,
+        specular: 1,
+        roughness: 0.3,
+        fresnel: 0.5,
       },
       lightposition: {
         x: 100,
         y: 200,
-        z: 100,
+        z: 300,
       },
     };
   };
@@ -77,8 +77,8 @@ export default function Chart3DViewer({ data }) {
             x,
             y,
             z,
-            line: { color: "#3b82f6", width: 4 },
-            marker: { size: 5 },
+            line: { color: "#6366f1", width: 5 },
+            marker: { size: 6, color: "#a5b4fc" },
             text: labels,
             hoverinfo: "text",
           },
@@ -93,9 +93,10 @@ export default function Chart3DViewer({ data }) {
             y,
             z,
             marker: {
-              size: 5,
+              size: 6,
               color: "#10b981",
-              opacity: 0.9,
+              opacity: 0.85,
+              line: { color: "#064e3b", width: 1 },
             },
             text: labels,
             hoverinfo: "text",
@@ -109,21 +110,38 @@ export default function Chart3DViewer({ data }) {
 
   const layout = {
     scene: {
-      xaxis: { title: xField || "X Axis", zeroline: false },
-      yaxis: { title: yField || "Y Axis", zeroline: false },
-      zaxis: { title: zField || "Z Axis", zeroline: false },
+      xaxis: {
+        title: { text: xField || "X Axis", font: { size: 14, color: "#374151" } },
+        gridcolor: "#e5e7eb",
+        zerolinecolor: "#d1d5db",
+      },
+      yaxis: {
+        title: { text: yField || "Y Axis", font: { size: 14, color: "#374151" } },
+        gridcolor: "#e5e7eb",
+        zerolinecolor: "#d1d5db",
+      },
+      zaxis: {
+        title: { text: zField || "Z Axis", font: { size: 14, color: "#374151" } },
+        gridcolor: "#e5e7eb",
+        zerolinecolor: "#d1d5db",
+      },
       dragmode: "turntable",
       camera: {
         projection: { type: "perspective" },
-        up: { x: 1, y: 1, z: 1 },
-        eye: { x: 1.6, y: 1.6, z: 1.6 },
+        up: { x: 0, y: 0, z: 1 },
+        eye: { x: 1.8, y: 1.8, z: 1.5 },
       },
+      aspectmode: "manual",
+      aspectratio: { x: 1.2, y: 1.2, z: 1 },
     },
-    margin: { l: 0, r: 0, b: 0, t: 40 },
+    margin: { l: 20, r: 20, b: 20, t: 50 },
     height: 550,
-    title: "📊 Interactive 3D Chart",
-    paper_bgcolor: "white",
-    plot_bgcolor: "white",
+    title: {
+      text: "📊 Interactive 3D Chart Viewer",
+      font: { size: 20, color: "#1e3a8a" },
+    },
+    paper_bgcolor: "#ffffff",
+    plot_bgcolor: "#f9fafb",
   };
 
   const config = {

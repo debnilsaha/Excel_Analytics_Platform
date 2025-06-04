@@ -1,17 +1,25 @@
 const User = require("../models/User");
+const Record = require("../models/Record");
 
-// Get all users (for admin panel listing)
 exports.getAllUsers = async (req, res) => {
   try {
     const users = await User.find().select("-password");
-    res.json(users);
+    const usersWithFiles = await Promise.all(
+      users.map(async (user) => {
+        const files = await Record.find({ uploadedBy: user.username }).select("filename uploadedAt -_id");
+        return {
+          ...user.toObject(),
+          files,
+        };
+      })
+    );
+    res.json(usersWithFiles);
   } catch (err) {
     console.error("Admin Get Users Error:", err);
     res.status(500).json({ message: "Failed to fetch users" });
   }
 };
 
-// Delete user by ID
 exports.deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
@@ -23,7 +31,6 @@ exports.deleteUser = async (req, res) => {
   }
 };
 
-// Update user role
 exports.updateUserRole = async (req, res) => {
   try {
     const { id } = req.params;
@@ -41,7 +48,6 @@ exports.updateUserRole = async (req, res) => {
   }
 };
 
-// Promote user to admin
 exports.promoteUser = async (req, res) => {
     const { id } = req.params;
     try {
@@ -52,7 +58,6 @@ exports.promoteUser = async (req, res) => {
     }
   };
   
-  // Demote admin to user
   exports.demoteUser = async (req, res) => {
     const { id } = req.params;
     try {

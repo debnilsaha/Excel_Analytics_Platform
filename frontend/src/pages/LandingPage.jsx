@@ -47,7 +47,7 @@ const LandingPage = () => {
       </main>
 
       <footer className="text-center py-6 text-sm text-gray-500">
-        &copy; {new Date().getFullYear()} EXCELINSIGHT. All rights reserved.
+        &copy; {new Date().getFullYear()} EXCELINSIGHT. Created by DEBNIL SAHA.
       </footer>
     </div>
   );
